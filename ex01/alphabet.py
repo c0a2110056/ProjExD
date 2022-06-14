@@ -27,10 +27,10 @@ def ans(r):
     if kotae == str(kesson):
         print("正解です。それでは具体的に欠損文字を一つずつ入力してください")
         itimojime = input("1つ目の文字を入力してください：")
-        if itimojime in r:
+        if itimojime in r: #一文字目の正誤判定
             r.remove(itimojime)    
             nimojime = input("2つ目の文字を入力してください：")
-            if nimojime in r:
+            if nimojime in r: #二文字目の正誤判定
                 print("大正解！！")
                 return 1
             else:   
