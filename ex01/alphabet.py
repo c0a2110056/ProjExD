@@ -1,6 +1,7 @@
 import string
 import random
 import datetime
+global taisyou,kesson,roop
 taisyou = 10
 kesson = 2
 roop = 5
