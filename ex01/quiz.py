@@ -15,11 +15,10 @@ def kaito():
         print("正解！！！")
     else:
         print("出直してこい")
-    
+    ed = datetime.datetime.now()
+    time = ((ed-st).seconds)
+    print(f"{time}秒")
 
 shutudai()
 st = datetime.datetime.now()
 kaito()
-ed = datetime.datetime.now()
-time = ((ed-st).seconds)
-print(f"{time}秒")
