@@ -1,16 +1,7 @@
 import tkinter as tk
 import tkinter.messagebox as tkm
-from turtle import right
 
 if __name__ == "__main__":
-
-    root = tk.Tk()
-    root.title("calc")
-    #root.geometry("300x500")
-
-    entry = tk.Entry(root, justify="right",width=10,font=("Times New Roman", 40))
-    entry.grid(row=0,column=0,columnspan=3)
-    
 
     def button_click(event):
         btn = event.widget
@@ -23,6 +14,16 @@ if __name__ == "__main__":
         else:
             #tkm.showinfo(txt,f"{txt}のボタンがクリックされました")
             entry.insert(tk.END,txt)
+
+    root = tk.Tk()
+    root.title("calc")
+    #root.geometry("300x500")　固定しないと自動調整してくれる
+
+    entry = tk.Entry(root, justify="right",
+                    width=10,font=("Times New Roman", 40)
+                    )
+    entry.grid(row=0,column=0,columnspan=3)
+    
 
     r,c = 1,0 #行番号r,列番号cの設定
     list = [i for i in range(9,-1,-1)]
