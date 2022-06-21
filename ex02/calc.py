@@ -48,7 +48,6 @@ if __name__ == "__main__":
             entry.delete(0,tk.END) #表示された式の削除
             entry.insert(tk.END,res) #結果を挿入
         else:
-            #tkm.showinfo(txt,f"{txt}のボタンがクリックされました")
             entry.insert(tk.END,txt)
 
     root = tk.Tk()
