@@ -10,7 +10,7 @@ if __name__ == "__main__":
     def button_click(event):
         btn = event.widget
         txt = btn["text"]
-        tkm.showinfo(txt,f"[{txt}]ボタンが押されました")
+        tkm.showinfo(txt,f"{txt}のボタンがクリックされました")
 
     r,c = 0,0 #行番号r,列番号cの設定
     for i in range(9,-1,-1):
