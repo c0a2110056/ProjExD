@@ -14,13 +14,20 @@ if __name__ == "__main__":
 
     def button_click(event):
         btn = event.widget
-        txt = btn["text"]
-        #tkm.showinfo(txt,f"{txt}のボタンがクリックされました")
-        entry.insert(tk.END,txt)
+        txt = btn["text"] #クリックされたボタンの文字
+        if txt == "=":
+            eqn = entry.get()
+            res = eval(eqn) #数式計算
+            entry.delete(0,tk.END) #表示された式の削除
+            entry.insert(tk.END,res) #結果を挿入
+        else:
+            #tkm.showinfo(txt,f"{txt}のボタンがクリックされました")
+            entry.insert(tk.END,txt)
 
     r,c = 1,0 #行番号r,列番号cの設定
     list = [i for i in range(9,-1,-1)]
     list.append("+")
+    list += "="
     for i,j in enumerate(list):
         
         button = tk.Button(root, text=j, width=4, height=2,
