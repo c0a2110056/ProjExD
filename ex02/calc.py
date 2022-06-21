@@ -13,9 +13,16 @@ if __name__ == "__main__":
             if int(eqn) <=1:
                 entry.delete(0,tk.END)
                 entry.insert(tk.END,"素数なわけない")
+            elif int(eqn) == 2:
+                entry.delete(0,tk.END)
+                entry.insert(tk.END,"素数だよ")
+
             else:
                 for i in range(2, round(int(eqn)**0.5+1)):
-                    if int(eqn) % i==0:
+                    if int(eqn)==57:
+                        entry.delete(0,tk.END)
+                        entry.insert(tk.END,"有名な数学者？")
+                    elif int(eqn) % i==0:
                         entry.delete(0,tk.END)
                         entry.insert(tk.END,"残念でした")
                         break
