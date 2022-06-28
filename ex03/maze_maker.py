@@ -32,6 +32,11 @@ def show_maze(canvas, maze_lst):
             canvas.create_rectangle(x*100, y*100, x*100+100, y*100+100, 
                                     fill=color[maze_lst[y][x]])
 
+def key_down(event):
+    global key
+    key = event.keysym
+    print(key)
+    
 if __name__ == "__main__":
 
     root = tk.Tk()
@@ -45,5 +50,6 @@ if __name__ == "__main__":
     canvas.create_image(cx,cy,image=tori,tag="tori")
 
     key = ""
-    
+    root.bind("<KeyPress>",key_down)
+
     root.mainloop()   
