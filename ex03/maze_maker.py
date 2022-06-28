@@ -35,7 +35,12 @@ def show_maze(canvas, maze_lst):
 def key_down(event):
     global key
     key = event.keysym
-    print(key)
+    #print(key)
+
+def key_up(event):
+    global key
+    key = ""
+    #print("きえたよ")
     
 if __name__ == "__main__":
 
@@ -51,5 +56,7 @@ if __name__ == "__main__":
 
     key = ""
     root.bind("<KeyPress>",key_down)
+
+    root.bind("<KeyRelease>",key_up)
 
     root.mainloop()   
