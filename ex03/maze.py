@@ -13,7 +13,7 @@ def key_up(event):
     #print("きえたよ")
 
 def main_proc():
-    global cx, cy, key
+    global cx, cy, key, mx, my
     #move = {#キー：押されているキーkey/値：移動幅リスト[x,y]
     #    ""     :[0, 0],
     #    "Up"   :[0, -20],
@@ -22,11 +22,11 @@ def main_proc():
     #    "Right":[+20, 0],
     #}
     #cx, cy = cx+move[key][0], cy+move[key][1]
-    if key == "Up"    : cy-=20
-    if key == "Down"  : cy+=20
-    if key == "Left"  : cx-=20
-    if key == "Right" : cx+=20
-    
+    if key == "Up"    : my-= 1
+    if key == "Down"  : my+= 1
+    if key == "Left"  : mx-= 1
+    if key == "Right" : mx+= 1
+    cx,cy = mx*100+50, my*100+50
     canvas.coords("tori",cx,cy)
     root.after(100,main_proc)
 if __name__ == "__main__":
@@ -41,7 +41,8 @@ if __name__ == "__main__":
     mm.show_maze(canvas,maze_bg) # canvasにmaze_bgを描画　
 
     tori = tk.PhotoImage(file="fig/9.png")
-    cx,cy = 300,400
+    mx, my = 1,1
+    cx,cy = mx*100+50,my*100+50
     canvas.create_image(cx,cy,image=tori,tag="tori")
 
     key = ""
