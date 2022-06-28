@@ -14,24 +14,24 @@ def key_up(event):
 
 def main_proc():
     global cx, cy, key, mx, my
-    move = {#キー：押されているキーkey/値：移動幅リスト[x,y]
-        ""     :[0, 0],
-        "Up"   :[0, -1],
-        "Down" :[0, +1],
-        "Left" :[-1, 0],
-        "Right":[+1, 0],
-    }
-    try:
-        if maze_bg[my+move[key][1]][mx+move[key][0]] == 0:
-            my, mx = my+move[key][1], mx+move[key][0]
+    #move = {#キー：押されているキーkey/値：移動幅リスト[x,y]
+    #    ""     :[0, 0],
+    #    "Up"   :[0, -1],
+    #    "Down" :[0, +1],
+    #    "Left" :[-1, 0],
+    #    "Right":[+1, 0],
+    #}
+    #try:
+    #    if maze_bg[my+move[key][1]][mx+move[key][0]] == 0:
+    #        my, mx = my+move[key][1], mx+move[key][0]
 
-    except:
-        pass
-    #if maze_bg[][] == 0: #　もし移動先が床なら
-    #if key == "Up"    : my-= 1
-    #if key == "Down"  : my+= 1
-    #if key == "Left"  : mx-= 1
-    #if key == "Right" : mx+= 1
+    #except:
+    #    pass
+    
+    if key == "Up"    and maze_bg[my-1][mx] == 0: my-= 1
+    if key == "Down"  and maze_bg[my+1][mx] == 0: my+= 1
+    if key == "Left"  and maze_bg[my][mx-1] == 0: mx-= 1
+    if key == "Right" and maze_bg[my][mx+1] == 0: mx+= 1
     cx,cy = mx*100+50, my*100+50
     canvas.coords("tori",cx,cy)
     root.after(100,main_proc)
@@ -54,6 +54,22 @@ def reset(event):
     if key == "Space":
         maze_bg = mm.make_maze(15,9) #1:壁/0:床を表す二次元リスト
         mm.show_maze(canvas,maze_bg)
+        tori = tk.PhotoImage(file="fig/9.png")
+        mx, my = 1,1
+        cx,cy = mx*100+50,my*100+50
+        canvas.create_image(cx,cy,image=tori,tag="tori")
+        start = tk.Label(root,text="START",fg="green",
+            font=("Times New Roman",20)
+            )
+        start.place(x=cx-100,y=cy-75)
+
+        goal = tk.Label(root,text="GOAL",fg="red",
+            font=("Times New Roman",20)
+            )
+        gx,gy = goal_place()
+        dx,dy = gx*100+50,gx*100+50
+        goal.place(x=dx-100,y=dy+75)
+
 
 if __name__ == "__main__":
     
@@ -80,7 +96,7 @@ if __name__ == "__main__":
             )
     gx,gy = goal_place()
     dx,dy = gx*100+50,gx*100+50
-    goal.place(x=dx-100,y=dy-75)
+    goal.place(x=dx-100,y=dy+75)
     key = ""
     root.bind("<KeyPress>",key_down)
 
