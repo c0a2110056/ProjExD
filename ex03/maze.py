@@ -102,7 +102,7 @@ if __name__ == "__main__":
 
     root.bind("<KeyRelease>",key_up)
 
-    root.bind("<KeyPress>",reset)
+    root.bind("<Key>",reset)
 
     if dx==cx and dy==cy:
         tkm.showinfo("やったね！","Comgraturation!!")
