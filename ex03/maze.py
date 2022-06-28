@@ -1,7 +1,7 @@
 import tkinter as tk
 import tkinter.messagebox as tkm
 import maze_maker as mm
-
+import random 
 def key_down(event):
     global key
     key = event.keysym
@@ -35,6 +35,26 @@ def main_proc():
     cx,cy = mx*100+50, my*100+50
     canvas.coords("tori",cx,cy)
     root.after(100,main_proc)
+
+def goal_place():
+    a,b = 0,0
+    gx,gy = 0,0
+    while True:
+        a = random.randint(0,8)
+        b = random.randint(0,14)
+        if maze_bg[a][b] ==0:
+            break
+    gx,gy = a,b
+    return gx,gy
+
+
+def reset(event):
+    global key
+    key = event.keysym
+    if key == "Space":
+        maze_bg = mm.make_maze(15,9) #1:壁/0:床を表す二次元リスト
+        mm.show_maze(canvas,maze_bg)
+
 if __name__ == "__main__":
     
     root = tk.Tk()
@@ -50,12 +70,26 @@ if __name__ == "__main__":
     mx, my = 1,1
     cx,cy = mx*100+50,my*100+50
     canvas.create_image(cx,cy,image=tori,tag="tori")
+    start = tk.Label(root,text="START",fg="green",
+            font=("Times New Roman",20)
+            )
+    start.place(x=cx-100,y=cy-75)
 
+    goal = tk.Label(root,text="GOAL",fg="red",
+            font=("Times New Roman",20)
+            )
+    gx,gy = goal_place()
+    dx,dy = gx*100+50,gx*100+50
+    goal.place(x=dx-100,y=dy-75)
     key = ""
     root.bind("<KeyPress>",key_down)
 
     root.bind("<KeyRelease>",key_up)
 
+    root.bind("<KeyPress>",reset)
+
+    if dx==cx and dy==cy:
+        tkm.showinfo("やったね！","Comgraturation!!")
     main_proc()
 
     root.mainloop()   
