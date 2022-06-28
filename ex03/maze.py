@@ -14,18 +14,24 @@ def key_up(event):
 
 def main_proc():
     global cx, cy, key, mx, my
-    #move = {#キー：押されているキーkey/値：移動幅リスト[x,y]
-    #    ""     :[0, 0],
-    #    "Up"   :[0, -20],
-    #    "Down" :[0, +20],
-    #    "Left" :[-20, 0],
-    #    "Right":[+20, 0],
-    #}
-    #cx, cy = cx+move[key][0], cy+move[key][1]
-    if key == "Up"    : my-= 1
-    if key == "Down"  : my+= 1
-    if key == "Left"  : mx-= 1
-    if key == "Right" : mx+= 1
+    move = {#キー：押されているキーkey/値：移動幅リスト[x,y]
+        ""     :[0, 0],
+        "Up"   :[0, -1],
+        "Down" :[0, +1],
+        "Left" :[-1, 0],
+        "Right":[+1, 0],
+    }
+    try:
+        if maze_bg[my+move[key][1]][mx+move[key][0]] == 0:
+            my, mx = my+move[key][1], mx+move[key][0]
+
+    except:
+        pass
+    #if maze_bg[][] == 0: #　もし移動先が床なら
+    #if key == "Up"    : my-= 1
+    #if key == "Down"  : my+= 1
+    #if key == "Left"  : mx-= 1
+    #if key == "Right" : mx+= 1
     cx,cy = mx*100+50, my*100+50
     canvas.coords("tori",cx,cy)
     root.after(100,main_proc)
