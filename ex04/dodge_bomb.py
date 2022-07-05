@@ -24,7 +24,8 @@ def main():
     
     bmimg_sfc = pg.Surface((20,20)) #　Surface
     bmimg_sfc.set_colorkey((0,0,0))
-    pg.draw.circle(bmimg_sfc,color_random(0,255),(10,10),10)
+    color = color_random(0,255)
+    pg.draw.circle(bmimg_sfc,color,(10,10),10)
     bmimg_rct = bmimg_sfc.get_rect() #　Rect
     bmimg_rct.centerx = random.randint(0,screen_rct.width)
     bmimg_rct.centerx = random.randint(0,screen_rct.height)
@@ -60,8 +61,13 @@ def main():
             if key_states[pg.K_RIGHT] == True: kkimg_rct.centerx -= 1
         screen_sfc.blit(kkimg_sfc,kkimg_rct)
 
-        #　爆弾の移動
+        
         a = size_random()
+        bmimg_sfc = pg.Surface((a,a)) #　Surface
+        bmimg_sfc.set_colorkey((0,0,0))
+        pg.draw.circle(bmimg_sfc,color,(a/2,a/2),a/2)
+
+        #　爆弾の移動
         bmimg_rct.move_ip(vx,vy)
         try:
             if bmimg_rct1: bmimg_rct1.move_ip(vx1,vy1)
@@ -88,10 +94,13 @@ def main():
             pass
 
         #　こうかとんが爆弾にぶつかったら
-        if kkimg_rct.colliderect(bmimg_rct):
-            n = random.randint(0,9)
-            kkimg_sfc = pg.image.load(f"fig/{n}.png") #　Surface
-            kkimg_sfc = pg.transform.rotozoom(kkimg_sfc,0,2.0) #　Surface
+        try:
+            if kkimg_rct.colliderect(bmimg_rct) or kkimg_rct.colliderect(bmimg_rct1):
+                n = random.randint(0,9)
+                kkimg_sfc = pg.image.load(f"fig/{n}.png") #　Surface
+                kkimg_sfc = pg.transform.rotozoom(kkimg_sfc,0,2.0) #　Surface
+        except:
+            pass
 
         pg.display.update()
         clock.tick(1000)
