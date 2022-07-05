@@ -71,7 +71,7 @@ def main():
         bmimg_rct.move_ip(vx,vy)
         try:
             if bmimg_rct1: bmimg_rct1.move_ip(vx1,vy1)
-        except:
+        except(UnboundLocalError):
             pass
         
 
@@ -79,7 +79,7 @@ def main():
         screen_sfc.blit(bmimg_sfc,bmimg_rct)
         try:
             if bmimg_rct1 : screen_sfc.blit(bmimg_sfc1,bmimg_rct1)
-        except:
+        except(UnboundLocalError):
             pass
         
         yoko,tate = check_bound(bmimg_rct, screen_rct)
@@ -90,7 +90,7 @@ def main():
             yoko1,tate1 = check_bound(bmimg_rct1, screen_rct)
             vx1 *= yoko1
             vy1 *= tate1
-        except:
+        except(UnboundLocalError):
             pass
 
         #　こうかとんが爆弾にぶつかったら
@@ -99,7 +99,7 @@ def main():
                 n = random.randint(0,9)
                 kkimg_sfc = pg.image.load(f"fig/{n}.png") #　Surface
                 kkimg_sfc = pg.transform.rotozoom(kkimg_sfc,0,2.0) #　Surface
-        except:
+        except(UnboundLocalError):
             pass
 
         pg.display.update()
@@ -132,6 +132,7 @@ def new_bomb(scr_rct):
 
 def size_random():
     return random.randint(20,50)
+
 if __name__ == "__main__":
     pg.init()             #　モジュールを初期化する
     main()                #　ゲームのメイン部分
