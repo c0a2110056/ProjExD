@@ -26,6 +26,8 @@ def main():
     bmimg_rct = bmimg_sfc.get_rect() #　Rect
     bmimg_rct.centerx = random.randint(0,screen_rct.width)
     bmimg_rct.centerx = random.randint(0,screen_rct.height)
+    vx, vy = +1, +1 #　加速度
+
     while True:
         screen_sfc.blit(bgimg_sfc,bgimg_rct)
         
@@ -38,6 +40,9 @@ def main():
         if key_states[pg.K_LEFT]  == True: kkimg_rct.centerx -= 1
         if key_states[pg.K_RIGHT] == True: kkimg_rct.centerx += 1
         screen_sfc.blit(kkimg_sfc,kkimg_rct)
+
+        #　爆弾の移動
+        bmimg_rct.move_ip(vx,vy)
 
         #　爆弾
         screen_sfc.blit(bmimg_sfc,bmimg_rct)
