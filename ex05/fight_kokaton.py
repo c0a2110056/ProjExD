@@ -1,3 +1,4 @@
+
 import pygame as pg
 import sys
 import random
@@ -47,6 +48,9 @@ class Bird:
                 self.rct.centerx -= 1
         self.blit(scr)
     
+    def attack(self):
+        return Shot(self)
+    
 
 class Bomb:
     def __init__(self, color, size, vxy, scr: Screen):
@@ -72,6 +76,45 @@ class Bomb:
         self.blit(scr)
 
 
+class Enemy:
+    def __init__(self, image, size, vxy, scr: Screen):
+        self.sfc = pg.image.load(image)
+        self.sfc = pg.transform.rotozoom(self.sfc, 0, size) 
+        self.rct = self.sfc.get_rect() # Rect
+        self.rct.centerx = random.randint(0, scr.rct.width)
+        self.rct.centery = random.randint(0, scr.rct.height)
+        self.vx, self.vy = vxy # 練習6
+
+    def blit(self,scr: Screen):
+        scr.sfc.blit(self.sfc, self.rct)
+
+    def update(self,scr: Screen):
+        # 練習6
+        self.rct.move_ip(self.vx, self.vy)
+        # 練習7
+        yoko, tate = check_bound(self.rct, scr.rct)
+        self.vx *= yoko
+        self.vy *= tate
+        # 練習5
+        self.blit(scr)
+
+
+class Shot:
+    def __init__(self, chr:Bird):
+        self.sfc = pg.image.load("fig/beam.png")
+        self.sfc = pg.transform.rotozoom(self.sfc, 0, 0.3)  # Surface
+        self.rct = self.sfc.get_rect()          # Rect
+        self.rct.midleft = chr.rct.center
+
+    def blit(self,scr: Screen):
+        scr.sfc.blit(self.sfc, self.rct)
+
+    def update(self,scr: Screen):
+        self.rct.move_ip(+10, 0) # 右方向に速度1で移動する
+        self.blit(scr)
+        if check_bound(self.rct, scr.rct) != (1,1): # 領域外に出たら
+            del self    
+        
 
 def main():
     clock = pg.time.Clock()
@@ -102,15 +145,23 @@ def main():
     # bmimg_rct.centerx = random.randint(0, screen_rct.width)
     # bmimg_rct.centery = random.randint(0, screen_rct.height)
     # vx, vy = +1, +1 # 練習6
+    mons = Enemy("fig/monster2.png",0.1,(+1,+1),scr)
     bkd = Bomb((255,0,0),10,(+1,+1),scr)
+    beam = None # ビームの有無
+    bak =[bkd] #　爆弾を複数作るためのリスト
 
     while True:
         #screen_sfc.blit(bgimg_sfc, bgimg_rct)
         scr.blit()
-
         # 練習2
         for event in pg.event.get():
-            if event.type == pg.QUIT: return
+            if event.type == pg.QUIT:
+                return
+            if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
+                beam = kkt.attack() # スペースキーが押されたらこうかとんがビームをうつ
+            if event.type == pg.KEYDOWN and event.key == pg.K_1:
+                nb = Bomb((color_random()),10,(+1,+1),scr)
+                bak.append(nb)
 
         # 練習4
         # key_states = pg.key.get_pressed() # 辞書
@@ -126,7 +177,12 @@ def main():
         #     if key_states[pg.K_RIGHT] == True: kkimg_rct.centerx -= 1
         # screen_sfc.blit(kkimg_sfc, kkimg_rct)
         kkt.update(scr)
+        for i in bak:
+            i.update(scr)
 
+        mons.update(scr)
+        if beam:
+            beam.update(scr)
         # # 練習6
         # bmimg_rct.move_ip(vx, vy)
         # # 練習5
@@ -135,11 +191,16 @@ def main():
         # yoko, tate = check_bound(bmimg_rct, screen_rct)
         # vx *= yoko
         # vy *= tate
-        bkd.update(scr)
+
+        if kkt.rct.colliderect(bkd.rct):
+            n = random.randint(0,9)
+            kkt.rct = kkt.sfc.get_rect()
+            xy = kkt.rct.center
+            kkt = Bird(f"fig/{n}.png", 2.0,(900,600))
 
         # 練習8
         #if kkimg_rct.colliderect(bmimg_rct): return 
-        if kkt.rct.colliderect(bkd.rct):
+        if kkt.rct.colliderect(mons.rct):
             return
         
         pg.display.update()
@@ -157,7 +218,12 @@ def check_bound(rct, scr_rct):
     if rct.top  < scr_rct.top  or scr_rct.bottom < rct.bottom: tate = -1 # 領域外
     return yoko, tate
 
-
+def color_random():#　爆弾の色をランダムに決める関数
+    x, y = 0, 255
+    a = random.randint(x,y)
+    b = random.randint(x,y)
+    c = random.randint(x,y)
+    return (a,b,c)
 
 if __name__ == "__main__":
     pg.init()
