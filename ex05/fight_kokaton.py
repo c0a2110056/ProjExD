@@ -59,7 +59,7 @@ class Bomb:
         self.rct = self.sfc.get_rect() # Rect
         self.rct.centerx = random.randint(0, scr.rct.width)
         self.rct.centery = random.randint(0, scr.rct.height)
-        self.vx, self.vy = vxy # 練習6
+        self.vx, self.vy = vxy 
 
     def blit(self,scr: Screen):
         scr.sfc.blit(self.sfc, self.rct)
@@ -180,19 +180,8 @@ def main():
                 nb = Bomb((color_random()),10,(+1,+1),scr)
                 bak.append(nb)
 
-        # 練習4
-        # key_states = pg.key.get_pressed() # 辞書
-        # if key_states[pg.K_UP]    == True: kkimg_rct.centery -= 1
-        # if key_states[pg.K_DOWN]  == True: kkimg_rct.centery += 1
-        # if key_states[pg.K_LEFT]  == True: kkimg_rct.centerx -= 1
-        # if key_states[pg.K_RIGHT] == True: kkimg_rct.centerx += 1
-        # # 練習7
-        # if check_bound(kkimg_rct, screen_rct) != (1, 1): # 領域外だったら
-        #     if key_states[pg.K_UP]    == True: kkimg_rct.centery += 1
-        #     if key_states[pg.K_DOWN]  == True: kkimg_rct.centery -= 1
-        #     if key_states[pg.K_LEFT]  == True: kkimg_rct.centerx += 1
-        #     if key_states[pg.K_RIGHT] == True: kkimg_rct.centerx -= 1
-        # screen_sfc.blit(kkimg_sfc, kkimg_rct)
+        
+        
         kkt.update(scr)
         for i in bak:
             i.update(scr)
