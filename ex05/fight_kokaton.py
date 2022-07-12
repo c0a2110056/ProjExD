@@ -82,19 +82,16 @@ class Enemy:
         self.rct = self.sfc.get_rect() # Rect
         self.rct.centerx = random.randint(0, scr.rct.width)
         self.rct.centery = random.randint(0, scr.rct.height)
-        self.vx, self.vy = vxy # 練習6
+        self.vx, self.vy = vxy 
 
     def blit(self,scr: Screen):
         scr.sfc.blit(self.sfc, self.rct)
 
     def update(self,scr: Screen):
-        # 練習6
         self.rct.move_ip(self.vx, self.vy)
-        # 練習7
         yoko, tate = check_bound(self.rct, scr.rct)
         self.vx *= yoko
         self.vy *= tate
-        # 練習5
         self.blit(scr)
 
 
@@ -143,7 +140,6 @@ def main():
     bak =[bkd] #　爆弾を複数作るためのリスト
     c = Color()
     while True:
-        #screen_sfc.blit(bgimg_sfc, bgimg_rct)
         scr.blit()
         # 練習2
         for event in pg.event.get():
@@ -164,14 +160,7 @@ def main():
         mons.update(scr)
         if beam:
             beam.update(scr)
-        # # 練習6
-        # bmimg_rct.move_ip(vx, vy)
-        # # 練習5
-        # screen_sfc.blit(bmimg_sfc, bmimg_rct)
-        # # 練習7
-        # yoko, tate = check_bound(bmimg_rct, screen_rct)
-        # vx *= yoko
-        # vy *= tate
+        
 
         if kkt.rct.colliderect(bkd.rct):
             n = random.randint(0,9)
@@ -179,8 +168,7 @@ def main():
             xy = kkt.rct.center
             kkt = Bird(f"fig/{n}.png", 2.0,(900,600))
 
-        # 練習8
-        #if kkimg_rct.colliderect(bmimg_rct): return 
+         
         if kkt.rct.colliderect(mons.rct):
             return
         
@@ -188,7 +176,7 @@ def main():
         clock.tick(1000)
 
 
-# 練習7
+
 def check_bound(rct, scr_rct):
     '''
     [1] rct: こうかとん or 爆弾のRect
