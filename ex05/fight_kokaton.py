@@ -1,4 +1,3 @@
-
 import pygame as pg
 import sys
 import random
@@ -99,6 +98,24 @@ class Enemy:
         self.blit(scr)
 
 
+class Color:
+    def _init__(self):
+        self.color = color_random()
+
+
+class Explosion(pg.sprite.Sprite):
+
+    defaultlife = 12
+    animcycle = 3
+    images = []
+
+    def __init__(self, actor):
+        pg.sprite.Sprite.__init__(self, self.containers)
+        self.image = self.images[0]
+        self.rect = self.image.get_rect(center=actor.rect.center)
+        self.life = self.defaultlife
+
+
 class Shot:
     def __init__(self, chr:Bird):
         self.sfc = pg.image.load("fig/beam.png")
@@ -149,7 +166,7 @@ def main():
     bkd = Bomb((255,0,0),10,(+1,+1),scr)
     beam = None # ビームの有無
     bak =[bkd] #　爆弾を複数作るためのリスト
-
+    c = Color()
     while True:
         #screen_sfc.blit(bgimg_sfc, bgimg_rct)
         scr.blit()
