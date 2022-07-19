@@ -3,9 +3,10 @@ from pygame.locals import *
 import math
 import sys
 import pygame.mixer
+from random import randint
 
 # 画面サイズ
-SCREEN = Rect(0, 0, 400, 400)
+SCREEN = Rect(0, 0, 1000, 700)
 
 # バドルのクラス
 class Paddle(pygame.sprite.Sprite):
@@ -23,7 +24,7 @@ class Paddle(pygame.sprite.Sprite):
 # ボールのクラス
 class Ball(pygame.sprite.Sprite):
     # コンストラクタ（初期化メソッド）
-    def __init__(self, filename, paddle, blocks, score, speed, angle_left, angle_right):
+    def __init__(self, filename, paddle, blocks, score, speed, angle_left, angle_right, items):
         pygame.sprite.Sprite.__init__(self, self.containers)
         self.image = pygame.image.load(filename).convert()
         self.rect = self.image.get_rect()
@@ -36,6 +37,7 @@ class Ball(pygame.sprite.Sprite):
         self.speed = speed # ボールの初期速度
         self.angle_left = angle_left # パドルの反射方向(左端:135度）
         self.angle_right = angle_right # パドルの反射方向(右端:45度）
+        self.items = items
 
     # ゲーム開始状態（マウスを左クリック時するとボール射出）
     def start(self):
@@ -51,6 +53,7 @@ class Ball(pygame.sprite.Sprite):
 
     # ボールの挙動
     def move(self):
+        global items,count
         self.rect.centerx += self.dx
         self.rect.centery += self.dy
 
@@ -76,12 +79,13 @@ class Ball(pygame.sprite.Sprite):
             angle = math.radians(y)                     # 反射角度
             self.dx = self.speed * math.cos(angle)
             self.dy = -self.speed * math.sin(angle)
-            # self.paddle_sound.play()                    # 反射音
+            #self.paddle_sound.play()                    # 反射音
 
         # ボールを落とした場合
         if self.rect.top > SCREEN.bottom:
             self.update = self.start                    # ボールを初期状態に
             #self.gameover_sound.play()
+            self.kill
             self.hit = 0
             self.score.add_score(-100)                  # スコア減点-100点
 
@@ -89,27 +93,35 @@ class Ball(pygame.sprite.Sprite):
         blocks_collided = pygame.sprite.spritecollide(self, self.blocks, True)
         if blocks_collided:  # 衝突ブロックがある場合
             oldrect = self.rect
+            itemper = randint(0,2) #アイテムが出る確率
+
             for block in blocks_collided:
+                if itemper == 1:
+                    items = Item("fig/6.png",block,self.paddle,self.blocks,self.score)
                 # ボールが左からブロックへ衝突した場合
                 if oldrect.left < block.rect.left and oldrect.right < block.rect.right:
                     self.rect.right = block.rect.left
                     self.dx = -self.dx
                     
+
                 # ボールが右からブロックへ衝突した場合
                 if block.rect.left < oldrect.left and block.rect.right < oldrect.right:
                     self.rect.left = block.rect.right
                     self.dx = -self.dx
+                    
 
                 # ボールが上からブロックへ衝突した場合
                 if oldrect.top < block.rect.top and oldrect.bottom < block.rect.bottom:
                     self.rect.bottom = block.rect.top
                     self.dy = -self.dy
+                    
 
                 # ボールが下からブロックへ衝突した場合
                 if block.rect.top < oldrect.top and block.rect.bottom < oldrect.bottom:
                     self.rect.top = block.rect.bottom
                     self.dy = -self.dy
-                # self.block_sound.play()     # 効果音を鳴らす
+                    
+                #self.block_sound.play()     # 効果音を鳴らす
                 self.hit += 1               # 衝突回数
                 self.score.add_score(self.hit * 10)   # 衝突回数に応じてスコア加点
 
@@ -134,16 +146,38 @@ class Score():
         screen.blit(img, (self.x, self.y))
     def add_score(self, x):
         self.score += x
+    
+#アイテムのクラス
+class Item(pygame.sprite.Sprite):
+    def __init__(self,imagename,block,paddle,blocks,score):
+        pygame.sprite.Sprite.__init__(self, self.containers)
+        self.image = pygame.image.load(imagename).convert()
+        self.image = pygame.transform.scale(self.image, (40,30))
+        self.rect = self.image.get_rect()
+        self.rect.centerx = block.rect.centerx
+        self.rect.centery = block.rect.centery
+        self.paddle = paddle
+        self.blocks = blocks
+        self.score = score
+
+    def update(self):
+        self.rect.centery+=2
+        if SCREEN.bottom <= self.rect.bottom:
+            self.kill()
+            print("ok")
+
+    # def get_item(self):
+    #     if self.rect.colliderect(self.paddle.rect) and self.dy > 0:
+    #         new_ball = Ball("fig/ball.png",
+    #                         self.paddle, self.blocks, self.score, 5, 135, 45)
+    #         lst.append(new_ball)
 
 def main():
+    global lst, items
+    items = None
     pygame.init()
-    screen = pygame.display.set_mode(SCREEN.size)
-    # Ball.paddle_sound = pygame.mixer.Sound(
-    #     "C:/github/sample/python/pygame/breakout/flashing.wav")    # パドルにボールが衝突した時の効果音取得
-    # Ball.block_sound = pygame.mixer.Sound(
-    #     "C:/github/sample/python/pygame/breakout/flying_pan.wav")    # ブロックにボールが衝突した時の効果音取得
-    # Ball.gameover_sound = pygame.mixer.Sound(
-    #     "C:/github/sample/python/pygame/breakout/badend1.wav")    # ゲームオーバー時の効果音取得
+    screen = pygame.display.set_mode(SCREEN.size) 
+    
     # 描画用のスプライトグループ
     group = pygame.sprite.RenderUpdates()  
 
@@ -153,22 +187,24 @@ def main():
     # スプライトグループに追加    
     Paddle.containers = group
     Ball.containers = group
+    Item.containers = group
     Block.containers = group, blocks
 
     # パドルの作成
     paddle = Paddle("fig/paddle.png")
 
-    # ブロックの作成(14*10)
-    for x in range(1, 15):
-        for y in range(1, 11):
-            Block("fig/block.png", x, y)
+    # ブロックの作成(37*19)
+    for x in range(1, 38):
+        for y in range(1, 20):
+            if not randint(1,38) == x or randint(1,20) == y:    
+                Block("fig/block.png", x, y)
 
     # スコアを画面(10, 10)に表示
-    score = Score(10, 10)    
+    score = Score(10, 10)  
 
     # ボールを作成
     ball = Ball("fig/ball.png",
-         paddle, blocks, score, 5, 135, 45)
+         paddle, blocks, score, 5, 135, 45, items=items)
     lst = [ball]
     clock = pygame.time.Clock()
 
@@ -183,13 +219,23 @@ def main():
         score.draw(screen) 
         # 画面更新 
         pygame.display.update()
-
-        # キーイベント（終了）
-        for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN and event.key == K_SPACE:
+        
+        if ball.items :
+            if ball.items.rect.colliderect(paddle.rect) > 0:
                 new_ball = Ball("fig/ball.png",
                             paddle, blocks, score, 5, 135, 45)
                 lst.append(new_ball)
+                print(ball.items)
+                del ball.items
+        
+        # for event in pygame.event.get():
+        #     if event.type == pygame.KEYDOWN and event.key == K_SPACE:
+        #         new_ball = Ball("fig/ball.png",
+        #                     paddle, blocks, score, 5, 135, 45)
+        #         lst.append(new_ball)
+
+        # キーイベント（終了）
+        for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
